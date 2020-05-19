@@ -60,7 +60,7 @@ and the optional features in Logger class are...
     public static bool InfoOnConsole { get; set; } // show the info log on console, while the default is file
     public static bool DebugOnConsole { get; set; } // show the debug log on console, while the default is file
 
-    public static CallerInfo CallerInfo { get; set; } // can automatically add (1) the source file and the line || (2) the class and the method
+    public static CallerInfo CallerInfo { get; set; } // can automatically add (1) the source file and the line || (2) the class and the method name
 
     public static bool Async { get; set; } // can log asynchronously which is 5~10 times faster than sync
     public static bool AutoBufferResize { get; set; } // intelligently resize the optimal buffer size in async mode
