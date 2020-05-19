@@ -1,4 +1,4 @@
-# SimpleLogger
+# SimpleLogger2
 C# intuitive / efficient log library for 90% of projects
 
 
