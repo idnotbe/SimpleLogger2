@@ -3,7 +3,6 @@ C# intuitive / efficient log library for 90% of projects
 
 
 unlike the other log libraries such as NLog or log4net, it is not overwhelming.
-
 because it's very simple, you can modify or add the additional features.
 
 
