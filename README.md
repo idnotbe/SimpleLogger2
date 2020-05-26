@@ -63,8 +63,7 @@ and the optional features in Logger class are...
     public static CallerInfo CallerInfo { get; set; } // can automatically add (1) the source file and the line || (2) the class and the method name
 
     public static bool Async { get; set; } // can log asynchronously which is 5~10 times faster than sync
-    public static bool AutoBufferResize { get; set; } // intelligently resize the optimal buffer size in async mode
-    public static double MaxFlushWait { get; set; } // write un-flushed logs after the max flush wait in async mode
+    public static double AutoFlushWait { get; set; } // write un-flushed logs after AutoFlushWait in async mode. Milliseconds.
 
     public static string LogFolderPath { get; set; } // the default is "log" under the current directory
     public static void Flush(); // in async mode
