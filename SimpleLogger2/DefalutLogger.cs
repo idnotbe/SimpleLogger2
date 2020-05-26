@@ -8,17 +8,18 @@ namespace SimpleLogger2
 {
     internal class DefalutLogger
     {
-        public DefalutLogger() : this(true, true, true, true, 3000, Path.Combine(System.Environment.CurrentDirectory, "log"))
+        public DefalutLogger() : this(true, true, true, 3000, Path.Combine(System.Environment.CurrentDirectory, "log"))
         {
         }
 
-        public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool async, bool autoBufferResize, double maxFlushWait, string logFolderPath)
+        //public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool async, bool autoBufferResize, double autoFlushWait, string logFolderPath)
+        public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool async, double autoFlushWait, string logFolderPath)
         {
             InfoOnConsole = infoOnConsole;
             DebugOnConsole = debugOnConsole;
             Async = async;
-            AutoBufferResize = autoBufferResize;
-            MaxFlushWait = maxFlushWait;
+            //AutoBufferResize = autoBufferResize;
+            AutoFlushWait = autoFlushWait;
             LogFolderPath = logFolderPath;
 
             _timer.AutoReset = true;
@@ -29,9 +30,9 @@ namespace SimpleLogger2
         public bool InfoOnConsole { get; set; }
         public bool DebugOnConsole { get; set; }
         public bool Async { get; set; }
-        public bool AutoBufferResize { get; set; }
+        //public bool AutoBufferResize { get; set; }
 
-        public double MaxFlushWait
+        public double AutoFlushWait
         {
             get
             {
@@ -105,7 +106,7 @@ namespace SimpleLogger2
             if (_bufferCount > 0) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
             else _bufferSize = Math.Max(_bufferSize - 1, 0);
 
-            if ((AutoBufferResize && _bufferCount >= _bufferSize) || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
+            if (_bufferCount >= _bufferSize || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
                 Flush();
 
             if (DebugOnConsole)
@@ -148,7 +149,7 @@ namespace SimpleLogger2
             if (_bufferCount > 0) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
             else _bufferSize = Math.Max(_bufferSize - 1, 0);
 
-            if ((AutoBufferResize && _bufferCount >= _bufferSize) || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
+            if (_bufferCount >= _bufferSize || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
                 Flush();
 
             if (InfoOnConsole)

@@ -34,8 +34,12 @@ namespace SimpleLogger2
         public static CallerInfo CallerInfo { get; set; } // 기본값 CallerInfo.SourceLine;
 
         public static bool Async { get { return _logger.Async; } set { _logger.Async = value; } }
-        public static bool AutoBufferResize { get { return _logger.AutoBufferResize; } set { _logger.AutoBufferResize = value; } }
-        public static double MaxFlushWait { get { return _logger.MaxFlushWait; } set { _logger.MaxFlushWait = value; } }
+        //public static bool AutoBufferResize { get { return _logger.AutoBufferResize; } set { _logger.AutoBufferResize = value; } }
+
+        /// <summary>
+        /// Write un-flushed logs after the AutoFlushWait in async mode. Milliseconds.
+        /// </summary>
+        public static double AutoFlushWait { get { return _logger.AutoFlushWait; } set { _logger.AutoFlushWait = value; } }
 
         public static string LogFolderPath { get { return _logger.LogFolderPath; } set { _logger.LogFolderPath = value; } }
 
