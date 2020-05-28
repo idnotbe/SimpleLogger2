@@ -37,14 +37,14 @@ namespace SimpleLogger2
         //public static bool AutoBufferResize { get { return _logger.AutoBufferResize; } set { _logger.AutoBufferResize = value; } }
 
         /// <summary>
-        /// Write un-flushed logs after the AutoFlushWait in async mode. Milliseconds.
+        /// Write un-flushed logs after AutoFlushWait in async mode. Milliseconds.
         /// </summary>
         public static double AutoFlushWait { get { return _logger.AutoFlushWait; } set { _logger.AutoFlushWait = value; } }
 
         public static string LogFolderPath { get { return _logger.LogFolderPath; } set { _logger.LogFolderPath = value; } }
 
-        public static void Info(string format, object o1 = null, object o2 = null, object o3 = null, object o4 = null, object o5 = null, object o6 = null, object o7 = null, object o8 = null, object o9 = null, object o10 = null,
-            [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void Info(string format, object o1 = null, object o2 = null, object o3 = null, object o4 = null, object o5 = null, object o6 = null, object o7 = null, object o8 = null, object o9 = null, object o10 = null)
+            //[CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             if (string.IsNullOrEmpty(format))
                 return;
