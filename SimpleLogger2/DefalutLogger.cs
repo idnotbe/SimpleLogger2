@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
 using System.Timers;
 
 namespace SimpleLogger2
