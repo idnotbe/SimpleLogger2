@@ -6,15 +6,16 @@ namespace SimpleLogger2
 {
     internal class DefalutLogger
     {
-        public DefalutLogger() : this(true, true, true, 3000, Path.Combine(System.Environment.CurrentDirectory, "log"))
+        public DefalutLogger() : this(true, true, true, true, 3000, Path.Combine(System.Environment.CurrentDirectory, "log"))
         {
         }
 
         //public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool async, bool autoBufferResize, double autoFlushWait, string logFolderPath)
-        public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool async, double autoFlushWait, string logFolderPath)
+        public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool errorOnColsole, bool async, double autoFlushWait, string logFolderPath)
         {
             InfoOnConsole = infoOnConsole;
             DebugOnConsole = debugOnConsole;
+            ErrorOnConsole = errorOnColsole;
             Async = async;
             //AutoBufferResize = autoBufferResize;
             AutoFlushWait = autoFlushWait;
@@ -27,6 +28,7 @@ namespace SimpleLogger2
 
         public bool InfoOnConsole { get; set; }
         public bool DebugOnConsole { get; set; }
+        public bool ErrorOnConsole { get; set; }
         public bool Async { get; set; }
         //public bool AutoBufferResize { get; set; }
 
@@ -71,6 +73,8 @@ namespace SimpleLogger2
 
         public event LoggedEventHandler DebugLogged;
 
+        public event LoggedEventHandler ErrorLogged;
+
         public void Debug(string text)
         {
             // thread-safe 인 _writer 를 점유하고 있는 놈이 완전히 처리하기 전에 불리는 count 를 센다.
@@ -112,6 +116,49 @@ namespace SimpleLogger2
 
             // 이벤트 발생
             DebugLogged?.Invoke(this, new LoggedEventArgs(text));
+        }
+
+        public void Error(string text)
+        {
+            // thread-safe 인 _writer 를 점유하고 있는 놈이 완전히 처리하기 전에 불리는 count 를 센다.
+            _bufferCount++;
+
+            // 새로 생기거나 날짜가 바뀌면 새로운 _streamWriter 를 할당한다.
+            if (_fileName == null || !_fileName.StartsWith(DateTime.Now.ToString("yyyyMMdd")))
+            {
+                lock (_writerCreateLock)
+                {
+                    if (_writer != null)
+                        _writer.Close();
+
+                    string assemblyName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                    _fileName = DateTime.Now.ToString("yyyyMMdd") + "." + assemblyName + ".txt";
+
+                    _writer = TextWriter.Synchronized(new StreamWriter(Path.Combine(_logFolderPath, _fileName), true)); // thread-safe
+                }
+            }
+
+            // 파일에 적는다
+            if (Async)
+                _writer.WriteLineAsync(text);
+            else
+            {
+                _writer.WriteLine(text);
+                _writer.Flush();
+            }
+
+            // AutoBufferResize 로직
+            if (_bufferCount > 0) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
+            else _bufferSize = Math.Max(_bufferSize - 1, 0);
+
+            if (_bufferCount >= _bufferSize || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
+                Flush();
+
+            if (DebugOnConsole)
+                Console.WriteLine(text);
+
+            // 이벤트 발생
+            ErrorLogged?.Invoke(this, new LoggedEventArgs(text));
         }
 
         public void Info(string text)
