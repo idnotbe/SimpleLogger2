@@ -154,7 +154,7 @@ namespace SimpleLogger2
             if (_bufferCount >= _bufferSize || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
                 Flush();
 
-            if (DebugOnConsole)
+            if (ErrorOnConsole)
                 Console.WriteLine(text);
 
             // 이벤트 발생
