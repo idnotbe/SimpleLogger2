@@ -9,11 +9,17 @@ namespace SimpleLogger2PoC
         {
             Console.WriteLine("--------------- START ---------------");
 
-            Logger.Debug("Degug Test");
-            Logger.Debug("Degug Test{0}", 2); // by default, automatically add the source file and the line
+            for (int i = 0; i < 10000; i++)
+            {
+                Logger.Debug("Degug Test");
+                Logger.Debug("Degug Test{0}", i); // by default, automatically add the source file and the line
+            }
 
             Logger.Info("Info Test");
             Logger.Info("Info Test{0}", 2); // no caller info on INFO
+
+            Logger.Error("Error Test");
+            Logger.Error("Error Test{0}", 3); // by default, automatically add the source file and the line
 
             Logger.CallerInfo = CallerInfo.ClassMethod;
 

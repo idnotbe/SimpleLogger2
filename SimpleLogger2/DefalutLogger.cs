@@ -2,22 +2,55 @@
 using System.IO;
 using System.Timers;
 
+using System.Configuration;
+
 namespace SimpleLogger2
 {
     internal class DefalutLogger
     {
-        public DefalutLogger() : this(true, true, true, true, 3000, Path.Combine(System.Environment.CurrentDirectory, "log"))
+        public DefalutLogger()
         {
+            string infoOnConsoleStr = ConfigurationManager.AppSettings["InfoOnConsole"]; // 만일 해당하는 값이 App.config에 없으면 null
+            if (!string.IsNullOrEmpty(infoOnConsoleStr)) InfoOnConsole = bool.Parse(infoOnConsoleStr.Trim());
+            else InfoOnConsole = true; // 기본값
+
+            string debugOnConsoleStr = ConfigurationManager.AppSettings["DebugOnConsole"]; // 만일 해당하는 값이 App.config에 없으면 null
+            if (!string.IsNullOrEmpty(debugOnConsoleStr)) DebugOnConsole = bool.Parse(debugOnConsoleStr.Trim());
+            else DebugOnConsole = true;
+
+            string errorOnColsoleStr = ConfigurationManager.AppSettings["ErrorOnConsole"]; // 만일 해당하는 값이 App.config에 없으면 null
+            if (!string.IsNullOrEmpty(errorOnColsoleStr)) ErrorOnConsole = bool.Parse(errorOnColsoleStr.Trim());
+            else ErrorOnConsole = true;
+
+            string asyncStr = ConfigurationManager.AppSettings["Async"]; // 만일 해당하는 값이 App.config에 없으면 null
+            if (!string.IsNullOrEmpty(asyncStr)) Async = bool.Parse(asyncStr.Trim());
+            else Async = true;
+
+            string autoFlushWaitStr = ConfigurationManager.AppSettings["AutoFlushWait"]; // 만일 해당하는 값이 App.config에 없으면 null
+            if (!string.IsNullOrEmpty(autoFlushWaitStr)) AutoFlushWait = double.Parse(autoFlushWaitStr.Trim());
+            else AutoFlushWait = 3000;
+
+            string logFolderPathStr = ConfigurationManager.AppSettings["LogFolderPath"];
+            if (!string.IsNullOrEmpty(autoFlushWaitStr))
+            {
+                if (Path.IsPathRooted(logFolderPathStr)) LogFolderPath = logFolderPathStr;
+                else LogFolderPath = Path.Combine(System.Environment.CurrentDirectory, logFolderPathStr);
+            }
+            else LogFolderPath = Path.Combine(System.Environment.CurrentDirectory, "log");
+
+            //Console.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}", InfoOnConsole, DebugOnConsole, ErrorOnConsole, Async, AutoFlushWait, LogFolderPath);
+
+            _timer.AutoReset = true;
+            _timer.Elapsed += _timer_Elapsed;
+            _timer.Start();
         }
 
-        //public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool async, bool autoBufferResize, double autoFlushWait, string logFolderPath)
         public DefalutLogger(bool infoOnConsole, bool debugOnConsole, bool errorOnColsole, bool async, double autoFlushWait, string logFolderPath)
         {
             InfoOnConsole = infoOnConsole;
             DebugOnConsole = debugOnConsole;
             ErrorOnConsole = errorOnColsole;
             Async = async;
-            //AutoBufferResize = autoBufferResize;
             AutoFlushWait = autoFlushWait;
             LogFolderPath = logFolderPath;
 
@@ -30,7 +63,6 @@ namespace SimpleLogger2
         public bool DebugOnConsole { get; set; }
         public bool ErrorOnConsole { get; set; }
         public bool Async { get; set; }
-        //public bool AutoBufferResize { get; set; }
 
         public double AutoFlushWait
         {
@@ -104,11 +136,13 @@ namespace SimpleLogger2
                 _writer.Flush();
             }
 
-            // AutoBufferResize 로직
-            if (_bufferCount > 0) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
+            // 버퍼에 쌓여있는 양을 처리하고 나면 동일한 양의 로그가 또 쌓여있는 상황을 이상적인 _bufferSize 로 본다.
+            if (_bufferCount > _bufferSize) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
             else _bufferSize = Math.Max(_bufferSize - 1, 0);
 
-            if (_bufferCount >= _bufferSize || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
+            //Console.WriteLine("_bufferCount = {0}, _bufferSize = {1}", _bufferCount, _bufferSize);
+
+            if (_bufferCount >= _bufferSize)
                 Flush();
 
             if (DebugOnConsole)
@@ -147,11 +181,11 @@ namespace SimpleLogger2
                 _writer.Flush();
             }
 
-            // AutoBufferResize 로직
-            if (_bufferCount > 0) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
+            // 버퍼에 쌓여있는 양을 처리하고 나면 동일한 양의 로그가 또 쌓여있는 상황을 이상적인 _bufferSize 로 본다.
+            if (_bufferCount > _bufferSize) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
             else _bufferSize = Math.Max(_bufferSize - 1, 0);
 
-            if (_bufferCount >= _bufferSize || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
+            if (_bufferCount >= _bufferSize)
                 Flush();
 
             if (ErrorOnConsole)
@@ -190,11 +224,11 @@ namespace SimpleLogger2
                 _writer.Flush();
             }
 
-            // AutoBufferResize 로직
-            if (_bufferCount > 0) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
+            // 버퍼에 쌓여있는 양을 처리하고 나면 동일한 양의 로그가 또 쌓여있는 상황을 이상적인 _bufferSize 로 본다.
+            if (_bufferCount > _bufferSize) _bufferSize = Math.Min(_bufferSize + 1, int.MaxValue);
             else _bufferSize = Math.Max(_bufferSize - 1, 0);
 
-            if (_bufferCount >= _bufferSize || _bufferCount == 1) // 지금 쓰는 하나 빼고는 _bufferCount 가 없을 때
+            if (_bufferCount >= _bufferSize)
                 Flush();
 
             if (InfoOnConsole)
