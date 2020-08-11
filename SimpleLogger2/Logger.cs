@@ -116,6 +116,11 @@ namespace SimpleLogger2
             }
         }
 
+        public static void Error(Exception ex)
+        {
+            Error(ex.ToString());
+        }
+
         public static void Flush()
         {
             _logger.Flush();
