@@ -165,6 +165,12 @@ namespace SimpleLogger2
                     if (_writer != null)
                         _writer.Close();
 
+                    //System.Reflection.Assembly assembly1 = System.Reflection.Assembly.GetExecutingAssembly();
+                    //System.Reflection.Assembly assembly2 = System.Reflection.Assembly.GetCallingAssembly();
+                    //System.Reflection.Assembly assembly3 = System.Reflection.Assembly.GetEntryAssembly();
+
+                    
+
                     string assemblyName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
                     _fileName = DateTime.Now.ToString("yyyyMMdd") + "." + assemblyName + ".txt";
 

@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallerInfo.cs" />
-    <Compile Include="DefalutLogger.cs" />
+    <None Include="DefalutLogger.cs--" />
     <Compile Include="LoggedEventArgs.cs" />
     <Compile Include="LoggedEventHandler.cs" />
     <Compile Include="Logger.cs" />
